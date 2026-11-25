@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP FREE FIRE SHOP - EPIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Archivo+Black&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',Arial}
+body{background:#000810;color:#fff}
+.video-bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.25}
+.overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,8,20,.92),rgba(0,15,35,.95));z-index:-1}
+a{color:#00aaff;text-decoration:none}
+/* INTRO */
+#intro{position:fixed;inset:0;z-index:100;background:#020A18;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;overflow-y:auto;text-align:center}
+.intro-glow1{position:absolute;width:280px;height:280px;background:#00aaff;filter:blur(90px);opacity:.45;top:-80px;left:-80px;border-radius:50%}
+.intro-glow2{position:absolute;width:280px;height:280px;background:#FF2D00;filter:blur(90px);opacity:.35;bottom:-80px;right:-80px;border-radius:50%}
+.intro-top{position:relative;z-index:2;background:rgba(255,255,255,.12);border:1px solid #00aaff;padding:7px 12px;border-radius:20px;font-size:10px;font-weight:800}
+.intro-char{position:relative;z-index:2;width:100%;max-width:360px;margin-top:14px;border-radius:18px;overflow:hidden;border:2px solid #00aaff;box-shadow:0 0 25px #00aaff}
+.intro-char img{width:100%;height:170px;object-fit:cover;display:block}
+.intro-char-tag{position:absolute;bottom:8px;left:8px;background:#000;color:#fff;padding:7px 10px;border-radius:10px;font-size:12px;text-align:left;line-height:1.2;border:1px solid #00aaff}
+.intro-char-tag span{color:#00ffaa;font-size:11px}
+.intro-badge2{position:relative;z-index:2;margin-top:14px;color:#00aaff;font-weight:900;font-size:12px;letter-spacing:2px;font-family:'Bungee'}
+.new-title{position:relative;z-index:2;font-family:'Archivo Black';font-size:42px;line-height:1.02;margin-top:10px}
+.new-title .grad{background:linear-gradient(90deg,#00aaff,#00FFCC,#FFD700,#00aaff);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradMove 3s linear infinite}
+@keyframes gradMove{to{background-position:300% 0}}
+.new-sub{position:relative;z-index:2;font-size:13px;line-height:1.6;color:#EAF7FF;margin-top:10px}.new-sub span{color:#00FFCC;font-weight:800}
+.marquee{position:relative;z-index:2;width:100%;overflow:hidden;background:#001A33;border:1px solid #00aaff55;border-radius:10px;padding:8px 0;margin-top:12px}
+.marquee-track{display:inline-block;white-space:nowrap;font-size:11px;font-weight:800;animation:scroll 14s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.intro-cards{position:relative;z-index:2;display:flex;gap:8px;width:100%;max-width:380px;margin-top:12px}
+.mini-card{flex:1;background:#fff;color:#000;border-radius:14px;padding:11px 6px;font-size:18px}.mini-card b{display:block;font-size:15px}.mini-card span{font-size:10px;color:#666}
+.mini-card.hot{background:#00aaff;color:#000;transform:scale(1.05);box-shadow:0 0 18px #00aaff}
+.evo-strip{position:relative;z-index:2;width:100%;max-width:380px;background:linear-gradient(90deg,#FF2D00,#FF9500);padding:11px;border-radius:12px;font-size:12px;margin-top:12px;cursor:pointer;font-weight:600}
+.new-btn{position:relative;z-index:2;width:100%;max-width:380px;background:#00aaff;color:#000;border:none;padding:16px;border-radius:30px;font-weight:900;font-size:16px;margin-top:14px;cursor:pointer;box-shadow:0 0 25px #00aaff;font-family:'Bungee'}
+.new-btn-wa{position:relative;z-index:2;width:100%;max-width:380px;background:#25D366;color:#fff;border:none;padding:13px;border-radius:30px;font-weight:800;margin-top:10px;cursor:pointer}
+.intro-small{position:relative;z-index:2;font-size:11px;color:#aaa;margin-top:10px}
+.intro-skip2{position:absolute;top:12px;right:12px;z-index:5;background:rgba(0,0,0,.6);color:#fff;border:1px solid #fff;padding:6px 10px;border-radius:20px;font-size:11px}
+/* APP */
+header{display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(0,20,45,.97);border-bottom:2px solid #00aaff;position:sticky;top:0;z-index:20}
+.logo{font-size:14px;font-weight:900;line-height:1.1;cursor:pointer;font-family:'Bungee'}.logo span{color:#00aaff}
+nav{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}nav button{background:#001a33;color:#fff;border:1px solid #00aaff;padding:7px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.hero{text-align:center;padding:22px 15px}.hero h1{font-size:28px;line-height:1.2;font-family:'Archivo Black'}.hero h1 b{color:#00aaff}
+.cat{display:flex;gap:8px;overflow-x:auto;padding:12px}.cat button{flex-shrink:0;background:#001a33;border:1px solid #333;padding:10px 15px;border-radius:25px;color:#fff;font-weight:600}.cat button.active{background:#00aaff;color:#000;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:#001224;border:1px solid #0a3a5e;border-radius:15px;overflow:hidden}
+.card-img{width:100%;height:185px;position:relative;overflow:hidden;background:#000}.card-img img{width:100%;height:100%;object-fit:cover}
+.card-img .label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.88));padding:22px 8px 8px;text-align:center;font-size:11px;font-weight:700}
+.card-body{padding:10px;text-align:center}.card-body b{font-size:14px}
+.buy{width:100%;background:#00aaff;color:#000;border:none;padding:11px 6px;border-radius:10px;font-weight:800;margin-top:8px;cursor:pointer;font-size:12px}.buy.locked{background:#333;color:#ccc}
+.section{margin:14px;background:rgba(0,20,45,.96);border:1px solid #00aaff55;border-radius:15px;padding:18px}
+input,select,textarea{width:100%;padding:12px;margin:7px 0;border-radius:10px;border:1px solid #333;background:#000;color:#fff;font-family:'Poppins'}
+.btn{width:100%;padding:13px;background:#00aaff;color:#000;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:13px}
+.btn2{width:100%;padding:12px;background:#001a33;color:#fff;border:1px solid #00aaff;border-radius:10px;margin-top:8px;cursor:pointer}
+.btn-green{width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer}
+.btn-orange{width:100%;padding:13px;background:linear-gradient(90deg,#FF2D00,#FF9500);color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer}
+.profile-pic{width:110px;height:110px;border-radius:50%;background:#00aaff;color:#000;font-size:36px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;overflow:hidden;position:relative;cursor:pointer}
+.profile-pic img{width:100%;height:100%;object-fit:cover;display:none}.profile-pic.has-img img{display:block}.profile-pic.has-img span{display:none}
+.profile-pic .cam{position:absolute;bottom:2px;right:2px;background:#000;color:#fff;font-size:14px;padding:4px 6px;border-radius:50%;border:1px solid #fff}
+footer{text-align:center;padding:20px;padding-bottom:80px;color:#888;font-size:12px}
+.wa{position:fixed;bottom:18px;right:18px;background:#25D366;color:#fff;padding:10px 14px;border-radius:50px;font-weight:700;text-decoration:none;z-index:90;font-size:13px}
+.vip-banner{display:none;margin:14px;background:linear-gradient(90deg,#075e54,#25D366);border-radius:14px;padding:14px;align-items:center;justify-content:space-between;cursor:pointer;border:2px solid #fff}
+.vip-banner.show{display:flex}.vip-banner button{background:#fff;color:#075e54;border:none;padding:10px 14px;border-radius:20px;font-weight:800}
+.pass-wrap{position:relative}.pass-wrap input{padding-right:48px}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#001a33;border:1px solid #00aaff;color:#fff;width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer}
+.auth-tabs{display:flex;background:#000;border-radius:12px;padding:4px;margin-bottom:15px;border:1px solid #00aaff55}.auth-tabs button{flex:1;padding:12px;border:none;border-radius:9px;font-weight:800;font-size:13px;cursor:pointer;background:transparent;color:#aaa}.auth-tabs button.active{background:#00aaff;color:#000}
+.auth-card{background:#000d1f;border:1px solid #00aaff33;border-radius:14px;padding:16px}
+.auth-title{font-size:20px;font-weight:900;text-align:center}.auth-sub{font-size:13px;color:#aaa;text-align:center;margin:6px 0 14px}
+.auth-link{color:#00aaff;font-weight:800;cursor:pointer;text-decoration:underline}
+.msg-ok{color:#00ffaa;font-size:13px;margin-top:10px;text-align:center;font-weight:700}.msg-err{color:#ff6666;font-size:13px;margin-top:10px;text-align:center;font-weight:700}
+/* ADMIN DASHBOARD */
+.admin-wrap{background:#020A18}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.stat{background:linear-gradient(135deg,#001A33,#002E5A);border:1px solid #00aaff55;border-radius:14px;padding:14px;text-align:center}
+.stat b{font-size:22px;display:block;color:#00FFCC}.stat span{font-size:11px;color:#aaa}
+.admin-tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 0}.admin-tabs button{flex-shrink:0;background:#001A33;border:1px solid #00aaff;padding:9px 13px;border-radius:20px;color:#fff;font-size:12px;font-weight:700}.admin-tabs button.active{background:#00aaff;color:#000}
+.admin-card{background:#001224;border:1px solid #0a3a5e;border-radius:14px;padding:14px;margin-top:10px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #123}
+.row:last-child{border:none}
+.pill{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:800;border:none;cursor:pointer}
+.pill-green{background:#00ffaa;color:#000}.pill-red{background:#ff4444;color:#fff}.pill-blue{background:#00aaff;color:#000}.pill-yellow{background:#FFD700;color:#000}
+.kpi{font-size:11px;color:#aaa}
+/* UPDATES + MAP */
+.update-card{background:#001224;border:1px solid #FF9500;border-radius:14px;overflow:hidden;margin-top:12px}
+.update-card img{width:100%;height:150px;object-fit:cover;display:block}
+.update-card div{padding:12px}
+.badge-live{background:#ff0000;color:#fff;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:900}
+.badge-new{background:#00ffaa;color:#000;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:900}
+#map{height:320px;width:100%;border-radius:14px;z-index:1}
+.map-pin{background:#fff;color:#000;border-radius:12px;padding:10px;margin-top:8px;font-size:13px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.stat-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<video class="video-bg" autoplay muted loop playsinline><source src="https://cdn.coverr.co/videos/coverr-gaming-controller-1655/1080p.mp4"></video>
+<div class="overlay"></div>
+
+<div id="intro">
+<div class="intro-glow1"></div><div class="intro-glow2"></div>
+<div class="intro-top">🔥 LIVE NOW • 128 GAMERS ONLINE • EVO VAULT OPEN 🔓</div>
+<div class="intro-char"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80"><div class="intro-char-tag">🔥 EVO BUNDLE<br><span>₦13,500 • HOT</span></div></div>
+<div class="intro-badge2">ⱽᴵᴾ𖠌 FREE FIRE SHOP • VERIFIED ✔</div>
+<h1 class="new-title">WELCOME TO<br><span class="grad">VIP SHOP</span></h1>
+<p class="new-sub">Buy <b>Free Fire</b> • <b>CODM</b> • <b>E-Football</b> • <b>Blood Strike</b><br>Accounts, Diamonds & Top Up — <span>Fast & Secure</span></p>
+<div class="marquee"><div class="marquee-track">⭐ 1000+ HAPPY CUSTOMERS • ⚡ 2 MINS DELIVERY • ✔ VERIFIED SELLER • 🔒 SECURED BY NOXRA PLC • ⭐ 1000+ HAPPY CUSTOMERS • ⚡ 2 MINS DELIVERY • ✔ VERIFIED SELLER • 🔒 SECURED BY NOXRA PLC • </div></div>
+<div class="intro-cards"><div class="mini-card">🎮<b>500+</b><span>Accounts Sold</span></div><div class="mini-card hot">💎<b>4.9⭐</b><span>Top Rated</span></div><div class="mini-card">⚡<b>2 Mins</b><span>Delivery</span></div></div>
+<div class="evo-strip" onclick="startApp()">🎁 <b>NEW DROP:</b> Legendary Rampage — Tap to Enter Shop <span>→</span></div>
+<button class="new-btn" onclick="startApp()">LET'S GET STARTED →</button>
+<button class="new-btn-wa" onclick="window.open('https://whatsapp.com/channel/0029VbDlOci7YSdCqzYqNx1d','_blank')">💬 Follow WhatsApp Channel</button>
+<p class="intro-small">Admin: +234 902 552 2011 | Support: +234 706 446 6964</p>
+<button class="intro-skip2" onclick="startApp()">Skip ✕</button>
+</div>
+
+<div id="app" style="display:none">
+<header><div onclick="tapLogo()"><div class="logo">VIP <span>FREE FIRE<br>SHOP</span></div><div style="font-size:10px;color:#00ffaa;margin-top:3px">✔ VERIFIED • Secured by Noxra PLC</div></div>
+<nav><button onclick="show('home')">Market</button><button onclick="show('deposit')">💰 Deposit</button><button onclick="show('updates')">🔥 FF Updates</button><button onclick="show('mapPage')">🗺️ Map</button><button onclick="show('profile')">Profile</button><button onclick="show('login')">Login</button></nav></header>
+
+<div id="vipBanner" class="vip-banner" onclick="joinChannel()"><div><div style="font-size:12px">🎉 YOU ARE LOGGED IN</div><b style="font-size:16px;font-family:'Bungee'">ⱽᴵᴾ𖠌 𝐅𝐑𝐄𝐄 𝐅𝐈𝐑𝐄 𝐬𝐡𝐨𝐩℠</b><div style="font-size:12px">Follow our WhatsApp Channel • Daily Drops • Giveaway</div></div><button>FOLLOW →</button></div>
+
+<div id="home">
+<div class="hero"><h1>VIP SHOP<br><b>VERIFIED GAMING VENDOR</b></h1><p id="welcomeMsg" style="color:#cceaff;margin-top:8px">Login to buy. Click any product to chat Admin.</p><p id="loginWarning" style="margin-top:8px;font-size:12px;background:rgba(255,0,0,.15);border:1px solid #ff5555;padding:8px;border-radius:10px">🔒 You must LOGIN before you can make purchase.</p><div id="announceBar" style="margin-top:10px;background:linear-gradient(90deg,#FF2D00,#FF9500);padding:10px;border-radius:10px;font-size:12px;font-weight:700"></div></div>
+<div style="display:flex;gap:8px;padding:0 12px"><button class="btn" style="flex:1" onclick="show('deposit')">💰 DEPOSIT NOW</button><button class="btn-orange" style="flex:1" onclick="show('updates')">🔥 FF UPDATES</button></div>
+<div class="cat"><button class="active" onclick="filterCat('All',this)">All</button><button onclick="filterCat('Free Fire',this)">🔥 Free Fire</button><button onclick="filterCat('CODM',this)">🎯 CODM</button><button onclick="filterCat('Subscription',this)">💎 Subscription</button><button onclick="filterCat('E-Football',this)">⚽ E-Football</button><button onclick="filterCat('TikTok',this)">🎵 TikTok</button><button onclick="filterCat('WhatsApp Channel',this)">💬 WhatsApp Channel</button><button onclick="filterCat('Blood Strike',this)">🩸 Blood Strike</button></div>
+<div class="grid" id="products"></div>
+<div class="section"><h2>🏆 LEADERBOARD - Top Buyers</h2><div id="leaderboard"></div></div>
+<div class="section"><h2>💬 VIP WhatsApp Channel</h2><p style="font-size:13px;line-height:1.6">Follow for daily drops & giveaway.</p><button class="btn" style="background:#25D366;color:#fff" onclick="joinChannel()">FOLLOW CHANNEL →</button></div>
+<div class="section"><h2>⭐ Why Trust VIP Shop?</h2><p style="font-size:14px;line-height:1.7">✔ Verified Gaming Vendor<br>✔ 1000+ Successful Deliveries<br>✔ Admin replies fast on WhatsApp<br>✔ Secured by Noxra PLC<br>✔ No scam, No fake accounts</p></div>
+</div>
+
+<!-- DEPOSIT PAGE -->
+<div id="deposit" style="display:none" class="section">
+<h2>💰 Deposit - Add Money</h2>
+<p style="font-size:13px;color:#aaa">Send money to account below, then tap <b>I Have Sent</b>. Admin go confirm am.</p>
+<div style="background:#000;border:1px solid #00ffaa;border-radius:14px;padding:16px;margin-top:12px;text-align:center">
+<p style="font-size:12px;color:#aaa">DEPOSIT ACCOUNT</p>
+<h3 id="depBankName" style="color:#00ffaa">OPay - 9025522011 - VIP FREE FIRE SHOP</h3>
+<p style="font-size:12px;color:#aaa;margin-top:6px">Use this account for all deposits</p>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="copyDeposit()">📋 COPY ACCOUNT</button><button class="btn-green" onclick="copyAmount()">📋 COPY AMOUNT</button></div>
+</div>
+<input id="depAmount" placeholder="Amount you sent e.g 10000">
+<input id="depSender" placeholder="Your Name / Bank you sent from e.g John - Opay">
+<select id="depMethod"><option>Opay</option><option>Palmpay</option><option>Bank Transfer</option><option>Moniepoint</option></select>
+<button class="btn-orange" onclick="confirmDeposit()">✅ I HAVE SENT DEPOSIT → ADMIN</button>
+<p id="depMsg"></p>
+<h3 style="margin-top:16px">🧾 My Deposit History</h3><div id="depositHistory" style="font-size:13px;color:#aaa">No deposit yet.</div>
+<div style="background:#001A33;border-radius:12px;padding:12px;margin-top:14px;font-size:12px;line-height:1.6">⚠️ <b>Rules:</b><br>• Send exact amount you type<br>• Keep receipt / screenshot<br>• Admin confirm in 2-10 mins<br>• No refund if you send to wrong account</div>
+</div>
+
+<!-- FF UPDATES - GARENA -->
+<div id="updates" style="display:none" class="section">
+<h2>🔥 Free Fire Updates - Garena Server</h2><p style="font-size:12px;color:#aaa">Legit updates from Garena. Tap to open official Garena page.</p>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn" onclick="window.open('https://ff.garena.com/','_blank')">🌐 GARENA OFFICIAL</button><button class="btn-orange" onclick="window.open('https://www.youtube.com/@freefire','_blank')">▶ YOUTUBE FF</button></div>
+<div id="ffUpdates"></div>
+<div style="background:#001A33;border-radius:12px;padding:12px;margin-top:14px;font-size:12px">💡 <b>Admin can add new update</b> from Dashboard → Updates. E go show here instantly for all customers.</div>
+</div>
+
+<!-- MAP PAGE -->
+<div id="mapPage" style="display:none" class="section">
+<h2>🗺️ Our Location & Map</h2><p style="font-size:13px;color:#aaa">Find us. Tap pin for direction.</p>
+<div id="map"></div>
+<div id="mapPins"></div>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn" onclick="getMyLocation()">📍 MY LOCATION</button><button class="btn-green" onclick="window.open('https://www.google.com/maps/search/?api=1&query=Oyo+Nigeria','_blank')">🧭 OPEN GOOGLE MAPS</button></div>
+<p style="font-size:12px;color:#aaa;margin-top:10px">Block D, NOS, Toluwa Street, Oyo State, Nigeria • Mon-Fri 8am-11:30pm • Sat 9am-10pm</p>
+</div>
+
+<!-- LOGIN -->
+<div id="login" style="display:none" class="section">
+<div class="auth-tabs"><button id="tabLogin" class="active" onclick="switchAuth('login')">🔑 LOGIN</button><button id="tabSignup" onclick="switchAuth('signup')">✨ SIGN UP</button></div>
+<div id="loginForm" class="auth-card"><div class="auth-title">Welcome Back 👋</div><div class="auth-sub">Login to buy.</div><input id="loginPhone" placeholder="Phone e.g +2349025522011"><div class="pass-wrap"><input type="password" id="loginPass" placeholder="Password"><button type="button" class="eye" onclick="togglePass('loginPass',this)">👁️</button></div><button class="btn" onclick="doLogin()">LOGIN →</button><p id="loginMsg"></p><p style="text-align:center;font-size:13px;margin-top:12px">No account? <span class="auth-link" onclick="switchAuth('signup')">Create Account</span></p><p style="text-align:center;font-size:13px;margin-top:8px"><span class="auth-link" onclick="show('reset')">Forgot Password? Reset</span></p></div>
+<div id="signupForm" class="auth-card" style="display:none"><div class="auth-title">Create Account ✨</div><div class="auth-sub">Create in 10 seconds.</div><input id="suName" placeholder="Full Name"><input id="suPhone" placeholder="Phone e.g +2349025522011"><input id="suGameId" placeholder="Game ID - numbers only"><select id="suGame"><option>Free Fire</option><option>CODM</option><option>E-Football</option><option>Blood Strike</option></select><div class="pass-wrap"><input type="password" id="suPass" placeholder="Create Password"><button type="button" class="eye" onclick="togglePass('suPass',this)">👁️</button></div><div class="pass-wrap"><input type="password" id="suPass2" placeholder="Confirm Password"><button type="button" class="eye" onclick="togglePass('suPass2',this)">👁️</button></div><button class="btn" onclick="doSignup()">CREATE ACCOUNT →</button><p id="signupMsg"></p></div>
+</div>
+<div id="reset" style="display:none" class="section"><h2>🔑 Reset Password</h2><input id="resetPhone" placeholder="Phone"><div class="pass-wrap"><input type="password" id="newPass" placeholder="New Password"><button type="button" class="eye" onclick="togglePass('newPass',this)">👁️</button></div><button class="btn" onclick="resetPass()">RESET PASSWORD</button><p id="resetMsg"></p><button class="btn2" onclick="switchAuth('login');show('login')">Back to Login</button></div>
+
+<!-- PROFILE -->
+<div id="profile" style="display:none" class="section"><div class="profile-pic" id="profilePicBox" onclick="document.getElementById('profileFile').click()"><span id="profileLetter">V</span><img id="profileImg"><div class="cam">📷</div></div><p style="text-align:center;font-size:12px;color:#00aaff;margin-top:8px">Tap photo to change</p><input type="file" id="profileFile" accept="image/*" style="display:none" onchange="previewProfilePic(this)"><div style="display:flex;gap:8px"><button class="btn2" onclick="document.getElementById('profileFile').click()">📷 Change Photo</button><button class="btn2" onclick="removeProfilePic()" style="border-color:#ff5555;color:#ff8888">Remove</button></div><h2 style="text-align:center;margin-top:14px">My Profile</h2><p style="text-align:center;font-size:13px;color:#aaa" id="profileInfo">Guest - Login First</p><input id="profName" placeholder="Full Name"><input id="profPhone" placeholder="Phone"><input id="profGame" placeholder="Game ID"><div class="pass-wrap"><input type="password" id="profPass" placeholder="Change Password"><button type="button" class="eye" onclick="togglePass('profPass',this)">👁️</button></div><button class="btn" onclick="saveProfile()">SAVE PROFILE</button><button class="btn2" onclick="show('deposit')">💰 Go to Deposit</button><button class="btn2" onclick="show('home')">Go to Marketplace</button><button class="btn2" onclick="logout()" style="border-color:red;color:#ff8888">Logout</button></div>
+
+<!-- ADMIN LOGIN + DASHBOARD -->
+<div id="admin" style="display:none" class="section admin-wrap">
+<h2>🔐 Admin Dashboard</h2><p style="font-size:12px;color:#aaa">Only Admin +234 902 552 2011. Tap logo 5x to open.</p>
+<div id="adminLoginBox"><div class="pass-wrap"><input type="password" id="adminPass" placeholder="Admin Password"><button type="button" class="eye" onclick="togglePass('adminPass',this)">👁️</button></div><button class="btn" onclick="unlockAdmin()">UNLOCK DASHBOARD →</button><p id="adminMsg"></p></div>
+<div id="adminPanel" style="display:none">
+<div class="stat-grid"><div class="stat"><b id="statProducts">0</b><span>Products</span></div><div class="stat"><b id="statUsers">0</b><span>Users</span></div><div class="stat"><b id="statOrders">0</b><span>Orders / Buys</span></div><div class="stat"><b id="statDeposits">₦0</b><span>Deposits Total</span></div></div>
+<div class="admin-tabs"><button class="active" onclick="adminTab('overview',this)">📊 Overview</button><button onclick="adminTab('products',this)">🛍️ Products</button><button onclick="adminTab('orders',this)">🧾 Orders</button><button onclick="adminTab('users',this)">👥 Users</button><button onclick="adminTab('deposits',this)">💰 Deposits</button><button onclick="adminTab('updatesTab',this)">🔥 FF Updates</button><button onclick="adminTab('mapTab',this)">🗺️ Map Pins</button><button onclick="adminTab('settings',this)">⚙️ Settings</button></div>
+
+<div id="tab-overview" class="admin-card"><h3>📊 Overview</h3><p class="kpi">Today orders, top product, announcement</p><input id="announceInput" placeholder="Announcement - e.g FLASH SALE TODAY 20% OFF!"><button class="btn-orange" onclick="saveAnnouncement()">📌 POST ANNOUNCEMENT</button><button class="btn2" onclick="clearAnnouncement()">Clear Announcement</button><div id="overviewList" style="margin-top:12px"></div></div>
+
+<div id="tab-products" class="admin-card" style="display:none"><h3>🛍️ Add / Manage Products</h3><input id="pName" placeholder="Product Name"><select id="pCat"><option>Free Fire</option><option>CODM</option><option>Subscription</option><option>E-Football</option><option>TikTok</option><option>WhatsApp Channel</option><option>Blood Strike</option></select><input id="pPrice" placeholder="Price e.g 13500 - leave 0 for Ask Price"><input type="file" id="pFile" accept="image/*" onchange="previewAdminImage(this)"><img id="adminPreview" style="width:100%;height:160px;object-fit:cover;border-radius:10px;display:none;margin-top:8px"><textarea id="pDesc" placeholder="Description"></textarea><label style="font-size:12px"><input type="checkbox" id="pHot" style="width:auto"> 🔥 Mark as HOT / Featured</label><button class="btn" onclick="addProduct()">PUBLISH PRODUCT</button><div id="adminList"></div></div>
+
+<div id="tab-orders" class="admin-card" style="display:none"><h3>🧾 Orders - Who Click Buy</h3><p class="kpi">When customer clicks CHAT ADMIN, order saves here. Admin can mark Done / WhatsApp them.</p><button class="btn2" onclick="clearOrders()">Clear All Orders</button><div id="ordersList"></div></div>
+
+<div id="tab-users" class="admin-card" style="display:none"><h3>👥 All Users</h3><div id="usersList"></div></div>
+
+<div id="tab-deposits" class="admin-card" style="display:none"><h3>💰 Deposits - Confirm / Reject</h3><input id="depositAcc" placeholder="Deposit Account - e.g OPay 9025522011 VIP SHOP"><button class="btn" onclick="updateDeposit()">UPDATE DEPOSIT ACCOUNT</button><div id="depositsList" style="margin-top:12px"></div></div>
+
+<div id="tab-updatesTab" class="admin-card" style="display:none"><h3>🔥 Add Free Fire Update (Garena)</h3><input id="upTitle" placeholder="Title e.g OB50 Update - New Character"><input id="upLink" placeholder="Garena Link e.g https://ff.garena.com/"><input type="file" id="upFile" accept="image/*" onchange="previewUpdateImage(this)"><img id="upPreview" style="width:100%;height:140px;object-fit:cover;border-radius:10px;display:none;margin-top:8px"><textarea id="upDesc" placeholder="What is new?"></textarea><button class="btn-orange" onclick="addUpdate()">POST UPDATE → LIVE</button><div id="updatesAdminList"></div></div>
+
+<div id="tab-mapTab" class="admin-card" style="display:none"><h3>🗺️ Add Map Pin</h3><p class="kpi">Add shop / pickup point. Customers go see am for Map page.</p><input id="mapTitle" placeholder="Pin Title e.g Main Shop - Oyo"><input id="mapLat" placeholder="Latitude e.g 7.85"><input id="mapLng" placeholder="Longitude e.g 3.93"><textarea id="mapDesc" placeholder="Address / Note"></textarea><button class="btn" onclick="addMapPin()">ADD PIN TO MAP</button><div id="mapAdminList"></div></div>
+
+<div id="tab-settings" class="admin-card" style="display:none"><h3>⚙️ Admin Settings</h3><div style="border:1px dashed #00aaff;border-radius:12px;padding:12px"><h4>🔑 Change Admin Password</h4><div class="pass-wrap"><input type="password" id="oldAdminPass" placeholder="Old Password"><button type="button" class="eye" onclick="togglePass('oldAdminPass',this)">👁️</button></div><div class="pass-wrap"><input type="password" id="newAdminPass" placeholder="New Password"><button type="button" class="eye" onclick="togglePass('newAdminPass',this)">👁️</button></div><div class="pass-wrap"><input type="password" id="confirmAdminPass" placeholder="Confirm"><button type="button" class="eye" onclick="togglePass('confirmAdminPass',this)">👁️</button></div><button class="btn" onclick="changeAdminPass()">CHANGE PASSWORD</button><p id="changeAdminMsg"></p></div><button class="btn2" style="border-color:red;color:#ff8888" onclick="adminLogout()">🔒 LOCK DASHBOARD</button><button class="btn2" onclick="exportData()">📥 EXPORT DATA (Copy)</button></div>
+
+</div></div>
+<a class="wa" href="https://wa.me/2347064466964?text=Hello VIP Shop Support">💬 Support</a><footer>© 2026 VIP FREE FIRE SHOP<br>Secured by <b style="color:#00aaff">Noxra PLC</b> • <a href="https://whatsapp.com/channel/0029VbDlOci7YSdCqzYqNx1d" target="_blank" style="color:#25D366">Follow WhatsApp Channel</a> • <span style="cursor:pointer;color:#00aaff" onclick="tapLogo();tapLogo();tapLogo();tapLogo();tapLogo()">Admin</span></footer></div>
+
+<script>
+const CHANNEL_URL="https://whatsapp.com/channel/0029VbDlOci7YSdCqzYqNx1d";
+let isLoggedIn=localStorage.getItem('vip_user')?true:false;let adminTempImage="";let profileTempImage="";let updateTempImage="";let logoTaps=0;let mapObj=null,mapLoaded=false;
+function tapLogo(){logoTaps++;if(logoTaps>=5){logoTaps=0;show('admin')}setTimeout(()=>logoTaps=0,2000)}
+function getAdminPass(){return localStorage.getItem('vip_admin_pass')||"VIPshopsm"}
+function togglePass(id,b){let el=document.getElementById(id);el.type=el.type==="password"?"text":"password";b.innerText=el.type==="text"?"🙈":"👁️"}
+function normalizePhone(p){p=p.trim().replace(/\s/g,'');if(/^0[789][01]\d{8}$/.test(p))return '+234'+p.slice(1);return p}
+function validPhone(p){return /^\+234[789][01]\d{8}$/.test(normalizePhone(p))}
+function getUsers(){try{return JSON.parse(localStorage.getItem('vip_users')||"{}")}catch(e){return {}}}function saveUsers(u){localStorage.setItem('vip_users',JSON.stringify(u))}
+function getLS(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}function setLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function switchAuth(m){let lf=document.getElementById('loginForm'),sf=document.getElementById('signupForm');if(m==='signup'){lf.style.display='none';sf.style.display='block';document.getElementById('tabLogin').classList.remove('active');document.getElementById('tabSignup').classList.add('active')}else{sf.style.display='none';lf.style.display='block';document.getElementById('tabSignup').classList.remove('active');document.getElementById('tabLogin').classList.add('active')}}
+function setMsg(id,t,ok){let el=document.getElementById(id);el.className=ok?'msg-ok':'msg-err';el.innerText=t}
+function startApp(){document.getElementById('intro').style.display='none';document.getElementById('app').style.display='block';updateBanner();loadProfilePic();renderAnnounce();if(isLoggedIn)show('home');else{show('login');switchAuth('login')}}
+function doSignup(){let name=document.getElementById('suName').value.trim(),phone=normalizePhone(document.getElementById('suPhone').value),gid=document.getElementById('suGameId').value.trim(),game=document.getElementById('suGame').value,pw=document.getElementById('suPass').value,pw2=document.getElementById('suPass2').value;if(name.length<2)return setMsg('signupMsg','❌ Enter Full Name',false);if(!validPhone(phone))return setMsg('signupMsg','❌ Wrong number!',false);if(!/^\d{6,}$/.test(gid))return setMsg('signupMsg','❌ Wrong Game ID!',false);if(pw.length<4)return setMsg('signupMsg','❌ Password 4+ chars',false);if(pw!==pw2)return setMsg('signupMsg','❌ Passwords no match!',false);let users=getUsers();if(users[phone]){setMsg('signupMsg','⚠️ You don get account! Go LOGIN.',false);setTimeout(()=>switchAuth('login'),1000);return}users[phone]={name,phone,game:gid,gameType:game,pass:pw,pic:"",joined:new Date().toLocaleDateString()};saveUsers(users);localStorage.setItem('vip_user',JSON.stringify(users[phone]));isLoggedIn=true;setMsg('signupMsg','✅ Welcome '+name,true);loadProfilePic();updateBanner();render();setTimeout(()=>show('home'),800)}
+function doLogin(){let phone=normalizePhone(document.getElementById('loginPhone').value),pw=document.getElementById('loginPass').value;if(!validPhone(phone))return setMsg('loginMsg','❌ Wrong number!',false);let users=getUsers();if(!users[phone])return setMsg('loginMsg','❌ No account. Go SIGN UP.',false);if(users[phone].pass!==pw)return setMsg('loginMsg','❌ Wrong password!',false);isLoggedIn=true;localStorage.setItem('vip_user',JSON.stringify(users[phone]));setMsg('loginMsg','✅ Welcome '+users[phone].name,true);loadProfilePic();updateBanner();render();setTimeout(()=>show('home'),700)}
+function previewProfilePic(el){if(!el.files[0])return;let r=new FileReader();r.onload=e=>{profileTempImage=e.target.result;document.getElementById('profileImg').src=profileTempImage;document.getElementById('profilePicBox').classList.add('has-img')};r.readAsDataURL(el.files[0])}
+function removeProfilePic(){profileTempImage="";document.getElementById('profileImg').src="";document.getElementById('profilePicBox').classList.remove('has-img');let u=JSON.parse(localStorage.getItem('vip_user')||"{}");delete u.pic;localStorage.setItem('vip_user',JSON.stringify(u));alert("Photo removed")}
+function loadProfilePic(){try{let u=JSON.parse(localStorage.getItem('vip_user')||"{}");if(u.pic){profileTempImage=u.pic;document.getElementById('profileImg').src=u.pic;document.getElementById('profilePicBox').classList.add('has-img')}if(u.name){document.getElementById('profileInfo').innerText=u.name+" • "+(u.phone||"")+" • Game ID: "+(u.game||"");document.getElementById('profileLetter').innerText=u.name.charAt(0).toUpperCase()}}catch(e){}}
+function gameImage(cat){if(cat=='Free Fire')return"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80";if(cat=='CODM')return"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&q=80";if(cat=='Subscription')return"https://images.unsplash.com/photo-1614294148960-9aa740632a87?w=600&q=80";if(cat=='E-Football')return"https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80";if(cat=='TikTok')return"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&q=80";if(cat=='WhatsApp Channel')return"https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=600&q=80";if(cat=='Blood Strike')return"https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=600&q=80";return"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80"}
+let products=getLS('vip_products_blue_real',[{name:"Free Fire Acc Available",cat:"Free Fire",desc:"Free Fire - Available Now",price:0,hot:false,img:gameImage('Free Fire')},{name:"CODM Acc Available",cat:"CODM",desc:"CODM - Available Now",price:0,hot:false,img:gameImage('CODM')},{name:"Free Fire Subscription Available",cat:"Subscription",desc:"Diamonds / Subscription Available",price:0,hot:true,img:gameImage('Subscription')},{name:"E-Football Acc Available",cat:"E-Football",desc:"E-Football - Available Now",price:0,hot:false,img:gameImage('E-Football')},{name:"TikTok Acc Available",cat:"TikTok",desc:"TikTok - Available Now",price:0,hot:false,img:gameImage('TikTok')},{name:"WhatsApp Channel Available",cat:"WhatsApp Channel",desc:"Channel - Available Now",price:0,hot:false,img:gameImage('WhatsApp Channel')},{name:"Blood Strike Acc Available",cat:"Blood Strike",desc:"Blood Strike - Available Now",price:0,hot:false,img:gameImage('Blood Strike')}]);
+let leaders=[{name:"***2011",amt:50000},{name:"***6964",amt:32000},{name:"***4432",amt:18000}];let currentCat='All';
+function updateBanner(){let b=document.getElementById('vipBanner');if(b)b.classList.toggle('show',isLoggedIn)}
+function joinChannel(){window.open(CHANNEL_URL,"_blank")}
+function renderAnnounce(){let a=localStorage.getItem('vip_announce')||"🔥 FLASH: New EVO Vault Drop + Fast Delivery Today!";document.getElementById('announceBar').innerText="📢 "+a}
+function saveAnnouncement(){let v=document.getElementById('announceInput').value.trim();if(!v)return alert("Type announcement");localStorage.setItem('vip_announce',v);renderAnnounce();alert("Announcement Posted ✅")}
+function clearAnnouncement(){localStorage.removeItem('vip_announce');renderAnnounce()}
+function render(){let g=document.getElementById('products');g.innerHTML='';products.filter(p=>currentCat=='All'||p.cat==currentCat).forEach(p=>{let img=p.img||gameImage(p.cat);let priceTxt=p.price&&p.price>0?"₦"+Number(p.price).toLocaleString():"ASK PRICE";let btnText=isLoggedIn?"CHAT ADMIN → "+priceTxt:"🔒 LOGIN TO BUY";g.innerHTML+=`<div class="card"><div class="card-img"><img src="${img}" loading="lazy" onerror="this.style.display='none'"><div class="label">${p.hot?'🔥 HOT • ':''}✔ VERIFIED • ${p.cat.toUpperCase()} • ${priceTxt}</div></div><div class="card-body"><b>${p.name}</b><p style="font-size:11px;color:#aaa">${p.desc}</p><button class="${isLoggedIn?'buy':'buy locked'}" onclick="buy('${p.name.replace(/'/g,"")}')">${btnText}</button></div></div>`});let lb=document.getElementById('leaderboard');if(lb){lb.innerHTML='';leaders.sort((a,b)=>b.amt-a.amt).forEach((l,i)=>lb.innerHTML+=`<div class="row"><span>${i+1}. ${l.name}</span><b>₦${l.amt.toLocaleString()}</b></div>`)}renderAdmin();renderUpdates();renderDeposits();renderDepositHistory();renderMap();renderMapPins()}
+function del(i){products.splice(i,1);setLS('vip_products_blue_real',products);render()}
+function filterCat(c,el){currentCat=c;document.querySelectorAll('.cat button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
+function buy(n){let orders=getLS('vip_orders',[]);let u=JSON.parse(localStorage.getItem('vip_user')||"{}");orders.unshift({product:n,user:u.name||u.phone||"Guest",phone:u.phone||"",date:new Date().toLocaleString(),status:"Pending"});setLS('vip_orders',orders);if(!isLoggedIn){alert("🔒 Login first!");show('login');switchAuth('login');return}window.open(`https://wa.me/2349025522011?text=${encodeURIComponent('Hello VIP Shop, I saw: '+n+' - How much? I am '+ (u.name||'')+' '+ (u.phone||''))}`);render()}
+function show(id){['home','login','admin','profile','reset','deposit','updates','mapPage'].forEach(x=>{let e=document.getElementById(x);if(e)e.style.display=x==id?'block':'none'});if(id==='mapPage')setTimeout(initMap,300);window.scrollTo(0,0)}
+function resetPass(){let ph=normalizePhone(document.getElementById('resetPhone').value.trim()),np=document.getElementById('newPass').value.trim();if(!validPhone(ph))return setMsg('resetMsg','❌ Wrong number!',false);let users=getUsers();if(!users[ph])return setMsg('resetMsg','❌ No account. Go Sign Up.',false);users[ph].pass=np;saveUsers(users);setMsg('resetMsg','✅ Reset Successful!',true);setTimeout(()=>{show('login');switchAuth('login')},1000)}
+function saveProfile(){let n=document.getElementById('profName').value||"VIP User",ph=document.getElementById('profPhone').value,gid=document.getElementById('profGame').value,old=JSON.parse(localStorage.getItem('vip_user')||"{}"),pic=profileTempImage||old.pic||"";localStorage.setItem('vip_user',JSON.stringify({name:n,phone:ph||old.phone,game:gid||old.game,pass:old.pass||"",pic}));document.getElementById('profileInfo').innerText=n+" • "+ph+" • Game ID: "+gid;document.getElementById('profileLetter').innerText=n.charAt(0).toUpperCase();if(pic){document.getElementById('profileImg').src=pic;document.getElementById('profilePicBox').classList.add('has-img')}alert("Profile Saved ✅")}
+function logout(){isLoggedIn=false;localStorage.removeItem('vip_user');updateBanner();render();show('login');switchAuth('login');alert("Logged out")}
+// DEPOSIT
+function getDepositAcc(){return localStorage.getItem('vip_deposit')||"OPay - 9025522011 - VIP FREE FIRE SHOP"}
+function copyDeposit(){navigator.clipboard.writeText(getDepositAcc());alert("Copied: "+getDepositAcc())}
+function copyAmount(){let a=document.getElementById('depAmount').value||"10000";navigator.clipboard.writeText(a);alert("Copied amount ₦"+a)}
+function confirmDeposit(){let a=document.getElementById('depAmount').value.trim(),s=document.getElementById('depSender').value.trim(),m=document.getElementById('depMethod').value;if(!isLoggedIn){alert("Login first to deposit");show('login');return}if(!a||!s){document.getElementById('depMsg').innerText="❌ Fill amount + your name";return}let deps=getLS('vip_deposits',[]);let u=JSON.parse(localStorage.getItem('vip_user')||"{}");deps.unshift({amount:Number(a),sender:s,method:m,user:u.name||"",phone:u.phone||"",date:new Date().toLocaleString(),status:"Pending"});setLS('vip_deposits',deps);document.getElementById('depMsg').innerText="✅ Deposit request sent! Admin go confirm in 2-10 mins.";window.open(`https://wa.me/2349025522011?text=${encodeURIComponent('Hello Admin, I sent DEPOSIT ₦'+a+' via '+m+'. Sender: '+s+' | User: '+(u.name||'')+' '+(u.phone||''))}`);render()}
+function renderDeposits(){let el=document.getElementById('depositsList');if(!el)return;let deps=getLS('vip_deposits',[]);if(!deps.length){el.innerHTML="<p style='color:#aaa;font-size:13px'>No deposits yet.</p>";return}el.innerHTML=deps.map((d,i)=>`<div class="row"><div><b>₦${Number(d.amount).toLocaleString()}</b> - ${d.sender}<br><span style="font-size:11px;color:#aaa">${d.method} • ${d.date} • ${d.phone}</span></div><div><button class="pill pill-green" onclick="setDepositStatus(${i},'Confirmed')">Confirm</button> <button class="pill pill-red" onclick="setDepositStatus(${i},'Rejected')">Reject</button><div style="font-size:11px;text-align:center;margin-top:4px">${d.status}</div></div></div>`).join('')}
+function setDepositStatus(i,s){let deps=getLS('vip_deposits',[]);deps[i].status=s;setLS('vip_deposits',deps);render();alert(s)}
+function renderDepositHistory(){let el=document.getElementById('depositHistory');if(!el)return;let deps=getLS('vip_deposits',[]);let u=JSON.parse(localStorage.getItem('vip_user')||"{}");let mine=deps.filter(d=>d.phone===u.phone);if(!mine.length){el.innerText="No deposit yet.";return}el.innerHTML=mine.map(d=>`• ₦${Number(d.amount).toLocaleString()} - ${d.method} - <b>${d.status}</b> - ${d.date}<br>`).join('')}
+function updateDeposit(){let v=document.getElementById('depositAcc').value.trim();if(!v)return alert("Type account");localStorage.setItem('vip_deposit',v);document.getElementById('depBankName').innerText=v;alert("Deposit Account Updated!")}
+// FF UPDATES
+let defaultUpdates=[{title:"OB50 Update - New Character & Map Changes",desc:"Garena don drop OB50! New character, new gun balance, new Bermuda changes. Check official Garena for full patch notes.",img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80",link:"https://ff.garena.com/",tag:"NEW",date:"Nov 2026"},{title:"EVO Vault Return - Legendary Bundle",desc:"Legendary Rampage don return for EVO Vault. Limited time. Buy from VIP Shop before e finish.",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&q=80",link:"https://ff.garena.com/",tag:"HOT",date:"Nov 2026"},{title:"Booyah Pass Season - Rewards Leak",desc:"New Booyah Pass rewards don leak. Check Garena YouTube for official reveal.",img:"https://images.unsplash.com/photo-1614294148960-9aa740632a87?w=800&q=80",link:"https://www.youtube.com/@freefire",tag:"LEAK",date:"Nov 2026"}];
+function getUpdates(){let custom=getLS('vip_ff_updates',[]);return [...custom,...defaultUpdates]}
+function renderUpdates(){let el=document.getElementById('ffUpdates');if(!el)return;el.innerHTML=getUpdates().map(u=>`<div class="update-card"><img src="${u.img}"><div><span class="${u.tag==='HOT'?'badge-live':'badge-new'}">${u.tag||'NEW'} • ${u.date||''}</span><h3 style="margin-top:8px">${u.title}</h3><p style="font-size:13px;color:#aaa;margin-top:6px;line-height:1.6">${u.desc}</p><button class="btn" style="margin-top:10px" onclick="window.open('${u.link}','_blank')">🔗 VIEW ON GARENA →</button></div></div>`).join('');let al=document.getElementById('updatesAdminList');if(al){let custom=getLS('vip_ff_updates',[]);al.innerHTML="<h4 style='margin-top:12px'>Your Posted Updates</h4>"+(custom.length?custom.map((u,i)=>`<div class="row"><span>${u.title}</span><button class="pill pill-red" onclick="delUpdate(${i})">Delete</button></div>`).join(''):"<p style='color:#aaa;font-size:12px'>No custom updates yet.</p>")}}
+function previewUpdateImage(el){let r=new FileReader();r.onload=e=>{updateTempImage=e.target.result;let im=document.getElementById('upPreview');im.src=updateTempImage;im.style.display='block'};r.readAsDataURL(el.files[0])}
+function addUpdate(){let t=document.getElementById('upTitle').value.trim(),d=document.getElementById('upDesc').value.trim(),l=document.getElementById('upLink').value.trim()||"https://ff.garena.com/";if(!t)return alert("Type title");let custom=getLS('vip_ff_updates',[]);custom.unshift({title:t,desc:d,link:l,img:updateTempImage||"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=80",tag:"NEW",date:new Date().toLocaleDateString()});setLS('vip_ff_updates',custom);updateTempImage="";render();alert("Update Posted Live!")}
+function delUpdate(i){let c=getLS('vip_ff_updates',[]);c.splice(i,1);setLS('vip_ff_updates',c);render()}
+// MAP
+let defaultPins=[{title:"Main Shop - Oyo",lat:7.85,lng:3.93,desc:"Block D, NOS, Toluwa Street, Oyo State"}];
+function getPins(){return [...getLS('vip_map_pins',[]),...defaultPins]}
+function renderMapPins(){let el=document.getElementById('mapPins');if(!el)return;el.innerHTML=getPins().map(p=>`<div class="map-pin"><b>📍 ${p.title}</b><br>${p.desc}<br><span style="color:#00aaff;cursor:pointer" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}','_blank')">🧭 Get Direction →</span></div>`).join('');let al=document.getElementById('mapAdminList');if(al){let c=getLS('vip_map_pins',[]);al.innerHTML=c.length?c.map((p,i)=>`<div class="row"><span>${p.title}</span><button class="pill pill-red" onclick="delPin(${i})">Delete</button></div>`).join(''):"<p style='color:#aaa;font-size:12px'>No custom pins yet.</p>"}}
+function renderMap(){renderMapPins()}
+function initMap(){let el=document.getElementById('map');if(!el)return;if(mapObj){mapObj.invalidateSize();return}try{mapObj=L.map('map').setView([7.85,3.93],11);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(mapObj);getPins().forEach(p=>{L.marker([p.lat,p.lng]).addTo(mapObj).bindPopup(`<b>${p.title}</b><br>${p.desc}`)})}catch(e){el.innerHTML="<p style='padding:20px;text-align:center'>Map loading... Check internet. <a href='https://www.google.com/maps/search/?api=1&query=Oyo+Nigeria' target='_blank'>Open Google Maps</a></p>"}}
+function getMyLocation(){if(!navigator.geolocation)return alert("Location not supported");navigator.geolocation.getCurrentPosition(pos=>{alert("Your location: "+pos.coords.latitude+", "+pos.coords.longitude);if(mapObj){mapObj.setView([pos.coords.latitude,pos.coords.longitude],14);L.marker([pos.coords.latitude,pos.coords.longitude]).addTo(mapObj).bindPopup("You are here").openPopup()}},()=>alert("Allow location permission"))}
+function addMapPin(){let t=document.getElementById('mapTitle').value.trim(),la=parseFloat(document.getElementById('mapLat').value),ln=parseFloat(document.getElementById('mapLng').value),d=document.getElementById('mapDesc').value.trim();if(!t||isNaN(la)||isNaN(ln))return alert("Fill title + lat + lng");let c=getLS('vip_map_pins',[]);c.push({title:t,lat:la,lng:ln,desc:d});setLS('vip_map_pins',c);mapObj=null;render();alert("Pin Added to Map!")}
+function delPin(i){let c=getLS('vip_map_pins',[]);c.splice(i,1);setLS('vip_map_pins',c);mapObj=null;render()}
+// ADMIN
+function adminTab(tab,btn){document.querySelectorAll('.admin-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['overview','products','orders','users','deposits','updatesTab','mapTab','settings'].forEach(t=>{let e=document.getElementById('tab-'+t);if(e)e.style.display=t===tab?'block':'none'})}
+function unlockAdmin(){if(document.getElementById('adminPass').value===getAdminPass()){document.getElementById('adminPanel').style.display='block';document.getElementById('adminLoginBox').style.display='none';document.getElementById('adminMsg').innerText="✅ Welcome Admin";renderAdmin()}else{document.getElementById('adminMsg').innerText="❌ Wrong Password"}}
+function adminLogout(){document.getElementById('adminPanel').style.display='none';document.getElementById('adminLoginBox').style.display='block';alert("Dashboard Locked")}
+function renderAdmin(){let users=getUsers();let orders=getLS('vip_orders',[]);let deps=getLS('vip_deposits',[]);document.getElementById('statProducts').innerText=products.length;document.getElementById('statUsers').innerText=Object.keys(users).length;document.getElementById('statOrders').innerText=orders.length;document.getElementById('statDeposits').innerText="₦"+deps.reduce((s,d)=>s+Number(d.amount||0),0).toLocaleString();document.getElementById('depBankName').innerText=getDepositAcc();let ol=document.getElementById('overviewList');if(ol)ol.innerHTML="<b>Recent Orders</b><br>"+(orders.slice(0,5).map(o=>`• ${o.product} - ${o.user} - ${o.status}<br>`).join('')||"No orders yet");let al=document.getElementById('adminList');if(al)al.innerHTML='<h4 style="margin-top:14px">Your Products</h4>'+products.map((p,i)=>`<div class="row"><span>${p.hot?'🔥 ':''}${p.name} - ${p.price? '₦'+Number(p.price).toLocaleString():'Ask Price'}</span><span><button class="pill pill-yellow" onclick="toggleHot(${i})">Hot</button> <button class="pill pill-red" onclick="del(${i})">Delete</button></span></div>`).join('');let ul=document.getElementById('usersList');if(ul){let arr=Object.values(users);ul.innerHTML=arr.length?arr.map(u=>`<div class="row"><div><b>${u.name}</b><br><span style="font-size:11px;color:#aaa">${u.phone} • Game: ${u.game} • ${u.joined||''}</span></div><button class="pill pill-blue" onclick="window.open('https://wa.me/${u.phone.replace('+','')}?text=Hello ${encodeURIComponent(u.name||'')}','_blank')">WhatsApp</button></div>`).join(''):"<p style='color:#aaa'>No users yet.</p>"}let ord=document.getElementById('ordersList');if(ord){ord.innerHTML=orders.length?orders.map((o,i)=>`<div class="row"><div><b>${o.product}</b><br><span style="font-size:11px;color:#aaa">${o.user} • ${o.phone} • ${o.date}</span></div><div><button class="pill pill-green" onclick="setOrder(${i},'Done')">Done</button> <button class="pill pill-red" onclick="delOrder(${i})">Del</button><div style="font-size:11px;text-align:center">${o.status}</div></div></div>`).join(''):"<p style='color:#aaa'>No orders yet.</p>"}renderDeposits();renderUpdates();renderMapPins()}
+function toggleHot(i){products[i].hot=!products[i].hot;setLS('vip_products_blue_real',products);render()}
+function setOrder(i,s){let o=getLS('vip_orders',[]);o[i].status=s;setLS('vip_orders',o);render()}
+function delOrder(i){let o=getLS('vip_orders',[]);o.splice(i,1);setLS('vip_orders',o);render()}
+function clearOrders(){if(confirm("Clear all orders?")){setLS('vip_orders',[]);render()}}
+function changeAdminPass(){let oldP=document.getElementById('oldAdminPass').value,newP=document.getElementById('newAdminPass').value,conf=document.getElementById('confirmAdminPass').value,msg=document.getElementById('changeAdminMsg');if(oldP!==getAdminPass())return msg.innerText="❌ Old password no correct";if(newP.length<4)return msg.innerText="❌ New password 4+ chars";if(newP!==conf)return msg.innerText="❌ No match";localStorage.setItem('vip_admin_pass',newP);msg.innerText="✅ Changed!";alert("Admin password changed!")}
+function previewAdminImage(el){let r=new FileReader();r.onload=e=>{adminTempImage=e.target.result;let im=document.getElementById('adminPreview');im.src=adminTempImage;im.style.display='block'};r.readAsDataURL(el.files[0])}
+function addProduct(){let p={name:document.getElementById('pName').value.trim(),cat:document.getElementById('pCat').value,price:Number(document.getElementById('pPrice').value)||0,desc:document.getElementById('pDesc').value||"Available Now",hot:document.getElementById('pHot').checked,img:adminTempImage||gameImage(document.getElementById('pCat').value)};if(!p.name)return alert("Type product name");products.push(p);setLS('vip_products_blue_real',products);adminTempImage="";render();alert("Published!")}
+function exportData(){let data={products,users:getUsers(),orders:getLS('vip_orders',[]),deposits:getLS('vip_deposits',[]),updates:getLS('vip_ff_updates',[]),pins:getLS('vip_map_pins',[])};navigator.clipboard.writeText(JSON.stringify(data));alert("Data copied! Paste am for WhatsApp / Notes to backup.")}
+render();updateBanner();loadProfilePic();renderAnnounce();document.getElementById('depBankName').innerText=getDepositAcc();
+</script>
+</body>
+</html>
